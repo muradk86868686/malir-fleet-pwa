@@ -20,7 +20,7 @@ export default defineConfig({
         }
 
         // Copy static files required for standalone PWA and Service Worker
-        const filesToCopy = ['vehicles_master.json', 'sw.js', 'manifest.json'];
+        const filesToCopy = ['vehicles_master.json', 'sw.js', 'manifest.json', '404.html'];
         filesToCopy.forEach((file) => {
           const src = path.resolve(currentDir, file);
           const dest = path.resolve(distDir, file);
@@ -44,6 +44,33 @@ export default defineConfig({
         if (fs.existsSync(jsSrc)) {
           fs.cpSync(jsSrc, jsDest, { recursive: true });
           console.log(`[Vite Plugin] Copied js/ -> dist/js/`);
+        }
+
+        // Fix manifest reference in dist/index.html so mobile shortcut opens root (no 404!)
+        const htmlPath = path.resolve(distDir, 'index.html');
+        if (fs.existsSync(htmlPath)) {
+          let html = fs.readFileSync(htmlPath, 'utf8');
+          html = html.replace(/href=["']\.\/assets\/manifest-[^"']+\.json["']/g, 'href="./manifest.json"');
+          fs.writeFileSync(htmlPath, html, 'utf8');
+          console.log('[Vite Plugin] Fixed manifest link to ./manifest.json in dist/index.html');
+        }
+
+        // Also fix any assets/manifest-*.json start_url if Chrome cached it
+        const assetsDir = path.resolve(distDir, 'assets');
+        if (fs.existsSync(assetsDir)) {
+          const assetFiles = fs.readdirSync(assetsDir);
+          assetFiles.forEach((f) => {
+            if (f.startsWith('manifest-') && f.endsWith('.json')) {
+              const mPath = path.resolve(assetsDir, f);
+              try {
+                const mData = JSON.parse(fs.readFileSync(mPath, 'utf8'));
+                mData.start_url = '../index.html';
+                mData.scope = '../';
+                fs.writeFileSync(mPath, JSON.stringify(mData, null, 2), 'utf8');
+                console.log(`[Vite Plugin] Fixed start_url in ${f}`);
+              } catch (e) {}
+            }
+          });
         }
       }
     }

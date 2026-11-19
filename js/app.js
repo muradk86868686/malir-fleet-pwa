@@ -241,17 +241,10 @@ class AppRouter {
         // 1. Capture raw photo frame from camera
         const snap = await window.cameraManager.captureRawFrame();
 
-        // 2. Auto-save directly to mobile gallery
-        const now = new Date();
-        const dateStr = now.toISOString().slice(0, 10);
-        const timeStr = `${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}${String(now.getSeconds()).padStart(2, '0')}`;
-        const filename = `${dateStr}_GateExit_${timeStr}.jpg`;
-        window.cameraManager.triggerLocalDownload(snap.rawBlob, filename);
-
-        // 3. Save to IndexedDB draft_snaps
+        // 2. Save to IndexedDB draft_snaps ONLY (NO duplicate raw download to gallery!)
         await window.fleetDB.addDraftSnap(snap.rawBlob, snap.thumbnailDataUrl, Date.now());
 
-        this.showToast('📸 Photo saved to gallery & draft queue! Fill details when relaxed.');
+        this.showToast('📸 Snap added to queue! Fill details when relaxed to save detailed photo.');
         await this.renderDraftSnapsList();
       } catch (err) {
         console.error('Rapid snap failed:', err);

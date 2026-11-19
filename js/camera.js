@@ -1,10 +1,10 @@
 /**
  * =========================================================================
- * Camera & HTML5 Canvas Photo Watermark Engine
+ * Camera & HTML5 Canvas Photo Watermark Engine (v2.2)
  * =========================================================================
  * Mobile-first rear camera stream handler, torch control, full-res canvas
- * watermarking, auto-download to phone storage, and thumbnail generation.
- * (Updated: Removed Trip from photo watermark as requested).
+ * watermarking with AUTO-FITTING text (never cut off on mobile),
+ * safe margins, and single-download detailed photo export.
  */
 
 class CameraManager {
@@ -20,17 +20,11 @@ class CameraManager {
     this.lastCapturedPhoto = null;
   }
 
-  /**
-   * Bind DOM elements and listeners
-   */
   init(videoEl, canvasEl) {
     this.videoElement = videoEl;
     this.canvasElement = canvasEl || document.createElement('canvas');
   }
 
-  /**
-   * Start camera with rear-facing preference
-   */
   async startCamera() {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       console.warn('getUserMedia not supported in this browser');
@@ -60,8 +54,6 @@ class CameraManager {
       this.isCameraRunning = true;
       this.cameraBlocked = false;
       this.updateStatus('Live Camera Ready', 'ready');
-
-      // Check torch capability
       this.checkTorchCapability();
       return true;
     } catch (err) {
@@ -86,9 +78,6 @@ class CameraManager {
     }
   }
 
-  /**
-   * Stop active camera stream
-   */
   stopCamera() {
     if (this.stream) {
       this.stream.getTracks().forEach((track) => track.stop());
@@ -101,26 +90,18 @@ class CameraManager {
     this.torchActive = false;
   }
 
-  /**
-   * Flip between rear and front camera
-   */
   async flipCamera() {
     this.currentFacingMode = (this.currentFacingMode === 'environment') ? 'user' : 'environment';
     return this.startCamera();
   }
 
-  /**
-   * Toggle flashlight/torch if supported by hardware
-   */
   async toggleTorch() {
     if (!this.stream) return false;
     const track = this.stream.getVideoTracks()[0];
     if (!track) return false;
 
     const capabilities = track.getCapabilities ? track.getCapabilities() : {};
-    if (!capabilities.torch) {
-      return false;
-    }
+    if (!capabilities.torch) return false;
 
     try {
       this.torchActive = !this.torchActive;
@@ -151,7 +132,8 @@ class CameraManager {
   }
 
   /**
-   * Capture raw photo frame from video (for Rapid Snap / Relaxed Mind workflow)
+   * Capture raw photo frame from video for the Rapid Snap queue
+   * (Does NOT download to phone storage yet — avoids duplicate photos!)
    */
   async captureRawFrame() {
     let sourceWidth, sourceHeight, drawSource;
@@ -161,7 +143,6 @@ class CameraManager {
       sourceWidth = this.videoElement.videoWidth;
       sourceHeight = this.videoElement.videoHeight;
     } else {
-      // Placeholder if camera is not active
       sourceWidth = 1280;
       sourceHeight = 720;
     }
@@ -183,7 +164,7 @@ class CameraManager {
 
     const rawBlob = await new Promise((res) => canvas.toBlob(res, 'image/jpeg', 0.90));
 
-    // Thumbnail
+    // Thumbnail for in-app queue display
     const thumbCanvas = document.createElement('canvas');
     const thumbWidth = 360;
     const thumbHeight = Math.round((sourceHeight / sourceWidth) * thumbWidth);
@@ -202,15 +183,13 @@ class CameraManager {
   }
 
   /**
-   * Capture photo from live video (or existing raw frame/uploaded image),
-   * apply clean watermark (WITHOUT TRIP), auto-download to phone storage,
-   * and generate thumbnail.
+   * Capture photo, stamp clean auto-fitting watermark, auto-download to phone,
+   * and store thumbnail in IndexedDB.
    */
   async captureAndWatermark(entryData, fallbackImgElement = null, rawBlobSource = null) {
     let sourceWidth, sourceHeight, drawSource;
 
     if (rawBlobSource) {
-      // Load raw blob into an Image
       const img = await this.loadImageFromBlob(rawBlobSource);
       drawSource = img;
       sourceWidth = img.naturalWidth;
@@ -232,18 +211,18 @@ class CameraManager {
     canvas.height = sourceHeight;
     const ctx = canvas.getContext('2d');
 
-    // 1. Draw camera video frame / image
+    // 1. Draw base photo frame
     ctx.drawImage(drawSource, 0, 0, sourceWidth, sourceHeight);
 
-    // 2. Draw auto photo watermark (CLEAN: NO TRIP TAG)
+    // 2. Draw watermark with AUTO-FIT & SAFE MARGINS (never hidden on any phone)
     this.drawWatermark(ctx, sourceWidth, sourceHeight, entryData);
 
-    // 3. Generate high-res JPEG blob for phone download
+    // 3. Generate high-res JPEG blob
     const fullBlob = await new Promise((resolve) => {
       canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.88);
     });
 
-    // 4. Generate lightweight thumbnail (~360px wide) for in-app storage
+    // 4. Generate lightweight thumbnail (~360px) for IndexedDB
     const thumbCanvas = document.createElement('canvas');
     const thumbWidth = 360;
     const thumbHeight = Math.round((sourceHeight / sourceWidth) * thumbWidth);
@@ -253,7 +232,7 @@ class CameraManager {
     thumbCtx.drawImage(canvas, 0, 0, thumbWidth, thumbHeight);
     const thumbnailDataUrl = thumbCanvas.toDataURL('image/jpeg', 0.75);
 
-    // 5. Auto-download watermarked photo locally to phone storage
+    // 5. Auto-download the ONE final detailed photo to phone storage
     const filename = this.generateFilename(entryData);
     this.triggerLocalDownload(fullBlob, filename);
 
@@ -279,73 +258,171 @@ class CameraManager {
 
   /**
    * Draw the auto-watermark banner:
-   * Format: Date & Time | Vehicle No | Vehicle Type | UC No
-   * (NOTE: Trip is intentionally EXCLUDED as requested by user)
+   * Multi-line, high-contrast, with auto-scaling so text NEVER gets cut off
+   * or hidden on mobile portrait screens!
    */
   drawWatermark(ctx, width, height, entry) {
     ctx.save();
 
-    // Scale strip height relative to image resolution
-    const stripHeight = Math.max(100, Math.round(height * 0.14));
-    const stripY = height - stripHeight;
+    const dim = Math.min(width, height);
+    const isPortrait = height > width || width < 800;
 
-    // Dark semi-transparent strip
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
-    ctx.fillRect(0, stripY, width, stripHeight);
-
-    // Vibrant emerald top accent bar
-    ctx.fillStyle = '#10b981';
-    ctx.fillRect(0, stripY, width, Math.max(4, Math.round(height * 0.005)));
-
-    // Header Badge
-    const headerFontSize = Math.max(13, Math.round(stripHeight * 0.17));
-    ctx.font = `800 ${headerFontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
-    ctx.fillStyle = '#38bdf8'; // Sky blue
-    ctx.textBaseline = 'top';
-    const paddingX = Math.max(20, Math.round(width * 0.03));
-    const headerY = stripY + Math.round(stripHeight * 0.12);
-    ctx.fillText('DISTRICT MALIR FLEET  •  GATE EXIT VERIFIED', paddingX, headerY);
-
-    // Main Stamp Text: Date & Time | Vehicle No | Vehicle Type | UC No (NO TRIP)
-    const mainFontSize = Math.max(16, Math.round(stripHeight * 0.28));
-    ctx.font = `bold ${mainFontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
-    ctx.fillStyle = '#ffffff';
-
-    // Drop shadow for legibility
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
-    ctx.shadowBlur = 5;
-    ctx.shadowOffsetX = 2;
-    ctx.shadowOffsetY = 2;
+    // Generous card safe margins: keeps clear of mobile phone navigation bars and gallery controls
+    const marginSide = Math.max(16, Math.round(width * 0.03));
+    const marginBottom = Math.max(24, Math.round(height * 0.035));
+    const cardWidth = width - (marginSide * 2);
+    const paddingInnerX = Math.max(16, Math.round(dim * 0.025));
+    const maxContentWidth = cardWidth - (paddingInnerX * 2);
+    const contentX = marginSide + paddingInnerX;
 
     const vNum = entry.vehicle_number || 'N/A';
     const vType = entry.vehicle_type || 'Petroleum';
     const ucNo = entry.uc_no || '-';
-    const dateTimeStr = entry.gate_out_time || entry.date || new Date().toLocaleString();
-
-    // CLEAN: NO TRIP TAG ON PHOTO WATERMARK
-    const mainStampText = `${dateTimeStr}  |  Vehicle #${vNum}  |  ${vType}  |  UC: ${ucNo}`;
-    const mainY = headerY + headerFontSize + Math.round(stripHeight * 0.08);
-    ctx.fillText(mainStampText, paddingX, mainY);
-
-    // Crew Sub-line
-    ctx.shadowBlur = 0;
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 0;
-    const crewFontSize = Math.max(12, Math.round(stripHeight * 0.16));
-    ctx.font = `600 ${crewFontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
-    ctx.fillStyle = '#cbd5e1';
     const driver = entry.driver_name || '-';
     const helper = entry.helper_name || '-';
-    const crewText = `Driver: ${driver}   |   Helper: ${helper}`;
-    const crewY = mainY + mainFontSize + Math.round(stripHeight * 0.08);
-    ctx.fillText(crewText, paddingX, crewY);
+    const dateTimeStr = entry.gate_out_time || entry.date || new Date().toLocaleString();
+
+    if (isPortrait) {
+      // 4-LINE DEDICATED LAYOUT FOR MOBILE PORTRAIT
+      // Line 1: Header Badge
+      // Line 2: Prominent Timestamp
+      // Line 3: Big Vehicle Number, Type & UC (NO Trip)
+      // Line 4: Crew Details (Driver & Helper)
+      const h1 = Math.max(12, Math.round(dim * 0.024));
+      const h2 = Math.max(12, Math.round(dim * 0.024));
+      const h3 = Math.max(16, Math.round(dim * 0.036));
+      const h4 = Math.max(11, Math.round(dim * 0.022));
+
+      const rowGap = Math.max(6, Math.round(dim * 0.012));
+      const paddingInnerY = Math.max(14, Math.round(dim * 0.022));
+      const totalContentHeight = h1 + h2 + h3 + h4 + (rowGap * 3);
+      const cardHeight = totalContentHeight + (paddingInnerY * 2);
+      const cardY = height - cardHeight - marginBottom;
+
+      // 1. Semi-transparent dark slate backdrop with rounded corners
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.94)';
+      this.drawRoundedRect(ctx, marginSide, cardY, cardWidth, cardHeight, Math.max(8, Math.round(dim * 0.014)));
+      ctx.fill();
+
+      // 2. Vibrant emerald accent line across top of card
+      ctx.fillStyle = '#10b981';
+      ctx.fillRect(marginSide, cardY, cardWidth, Math.max(4, Math.round(dim * 0.005)));
+
+      // Shadow for extreme text contrast against bright backgrounds
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
+      ctx.shadowBlur = 6;
+      ctx.shadowOffsetX = 1;
+      ctx.shadowOffsetY = 2;
+
+      // Row 1: Header Badge
+      const y1 = cardY + paddingInnerY;
+      this.drawFittedText(ctx, 'DISTRICT MALIR FLEET • GATE EXIT VERIFIED', contentX, y1, maxContentWidth, h1, '800', '#38bdf8');
+
+      // Row 2: Live Date & Time
+      const y2 = y1 + h1 + rowGap;
+      this.drawFittedText(ctx, `DATE & TIME: ${dateTimeStr}`, contentX, y2, maxContentWidth, h2, '700', '#facc15');
+
+      // Row 3: Vehicle #, Type & UC (Clean, bold, NO Trip stamp!)
+      const y3 = y2 + h2 + rowGap;
+      const mainText = `VEHICLE #${vNum}   |   ${vType.toUpperCase()}   |   UC: ${ucNo}`;
+      this.drawFittedText(ctx, mainText, contentX, y3, maxContentWidth, h3, '900', '#ffffff');
+
+      // Row 4: Crew Details (Driver & Helper)
+      const y4 = y3 + h3 + rowGap;
+      const crewText = `Driver: ${driver}    •    Helper: ${helper}`;
+      this.drawFittedText(ctx, crewText, contentX, y4, maxContentWidth, h4, '600', '#cbd5e1');
+
+    } else {
+      // 3-LINE WIDE LAYOUT FOR LANDSCAPE SCREENS
+      const h1 = Math.max(14, Math.round(dim * 0.026));
+      const h2 = Math.max(18, Math.round(dim * 0.038));
+      const h3 = Math.max(12, Math.round(dim * 0.024));
+
+      const rowGap = Math.max(7, Math.round(dim * 0.014));
+      const paddingInnerY = Math.max(14, Math.round(dim * 0.024));
+      const totalContentHeight = h1 + h2 + h3 + (rowGap * 2);
+      const cardHeight = totalContentHeight + (paddingInnerY * 2);
+      const cardY = height - cardHeight - marginBottom;
+
+      // Backdrop
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.94)';
+      this.drawRoundedRect(ctx, marginSide, cardY, cardWidth, cardHeight, Math.max(8, Math.round(dim * 0.014)));
+      ctx.fill();
+
+      // Top accent
+      ctx.fillStyle = '#10b981';
+      ctx.fillRect(marginSide, cardY, cardWidth, Math.max(4, Math.round(dim * 0.005)));
+
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
+      ctx.shadowBlur = 6;
+      ctx.shadowOffsetX = 1;
+      ctx.shadowOffsetY = 2;
+
+      // Row 1: Header (Left) + Timestamp (Right)
+      const y1 = cardY + paddingInnerY;
+      const headerText = 'DISTRICT MALIR FLEET • GATE EXIT VERIFIED';
+      ctx.font = `800 ${h1}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+      const headerWidth = ctx.measureText(headerText).width;
+
+      this.drawFittedText(ctx, headerText, contentX, y1, maxContentWidth * 0.6, h1, '800', '#38bdf8');
+
+      ctx.font = `700 ${h1}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+      const timeWidth = ctx.measureText(dateTimeStr).width;
+      const timeX = Math.max(contentX + headerWidth + 20, marginSide + cardWidth - paddingInnerX - timeWidth);
+      ctx.fillStyle = '#facc15';
+      ctx.textBaseline = 'top';
+      ctx.fillText(dateTimeStr, timeX, y1);
+
+      // Row 2: Vehicle Details (NO Trip)
+      const y2 = y1 + h1 + rowGap;
+      const mainText = `VEHICLE #${vNum}   |   ${vType.toUpperCase()}   |   UC: ${ucNo}`;
+      this.drawFittedText(ctx, mainText, contentX, y2, maxContentWidth, h2, '900', '#ffffff');
+
+      // Row 3: Crew Details
+      const y3 = y2 + h2 + rowGap;
+      const crewText = `Driver: ${driver}    •    Helper: ${helper}`;
+      this.drawFittedText(ctx, crewText, contentX, y3, maxContentWidth, h3, '600', '#cbd5e1');
+    }
 
     ctx.restore();
   }
 
   /**
-   * Generate filename format: YYYY-MM-DD_VehicleNo_HHMM.jpg (NO TRIP TAG)
+   * Auto-Fitting Font Helper:
+   * Measures text width and automatically reduces font size if necessary
+   * so text NEVER gets clipped or hidden outside the image borders!
    */
+  drawFittedText(ctx, text, x, y, maxWidth, baseSize, weight = 'bold', color = '#ffffff') {
+    let fontSize = baseSize;
+    ctx.font = `${weight} ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+    let measuredWidth = ctx.measureText(text).width;
+
+    // Scale font down proportionally if it exceeds maxWidth
+    if (measuredWidth > maxWidth && maxWidth > 50) {
+      const scale = maxWidth / measuredWidth;
+      fontSize = Math.max(10, Math.floor(baseSize * scale));
+      ctx.font = `${weight} ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+    }
+
+    ctx.fillStyle = color;
+    ctx.textBaseline = 'top';
+    ctx.fillText(text, x, y);
+  }
+
+  drawRoundedRect(ctx, x, y, width, height, radius) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+  }
+
   generateFilename(entry) {
     const datePart = entry.date || new Date().toISOString().slice(0, 10);
     const vNum = String(entry.vehicle_number || 'GateExit').replace(/[^a-zA-Z0-9]/g, '');
@@ -358,9 +435,6 @@ class CameraManager {
     return `${datePart}_${vNum}_${timePart}.jpg`;
   }
 
-  /**
-   * Auto-download photo locally to phone storage
-   */
   triggerLocalDownload(blob, filename) {
     try {
       const url = URL.createObjectURL(blob);
@@ -373,15 +447,12 @@ class CameraManager {
       setTimeout(() => {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-      }, 1200);
+      }, 1500);
     } catch (e) {
       console.warn('Auto photo download failed:', e);
     }
   }
 
-  /**
-   * Placeholder photo generator if camera not active
-   */
   async generatePlaceholderPhoto(entryData) {
     const canvas = this.canvasElement;
     canvas.width = 1280;
