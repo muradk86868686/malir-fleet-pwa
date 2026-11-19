@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>District Malir Fleet - Gate Exit PWA</title>
+  
+  <script>
+    // Enforce HTTPS on remote hosts so camera & PWA shortcut work seamlessly
+    if (location.protocol === 'http:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1' && !location.hostname.startsWith('192.168.')) {
+      location.replace('https://' + location.host + location.pathname + location.search + location.hash);
+    }
+  </script>
+
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="GateExit PWA">
+  <meta name="description" content="Mobile-First Fleet Gate-Exit Tracking for District Malir (Petroleum & EV Vehicles)">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/svg+xml" href="./assets/icon-ep4GruZs.svg">
+  <link rel="apple-touch-icon" href="./assets/icon-192-9XSACzit.png">
+
+  <!-- Core CSS -->
+
+  <!-- Chart.js UMD Bundle (Locally bundled for 100% offline support) -->
+  <script src="./js/libs/chart.umd.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-C2fZ894v.css">
+</head>
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased h-screen flex flex-col overflow-hidden select-none">
+
+  <!-- ================= TOP APP BAR ================= -->
+  <header class="bg-white/95 dark:bg-slate-900/95 backdrop-blur border-b border-slate-200 dark:border-slate-800 px-3 py-2 flex items-center justify-between shrink-0 z-30 shadow-sm">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-emerald-500 p-0.5 shadow-sm flex items-center justify-center shrink-0">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/>
+        </svg>
+      </div>
+      <div>
+        <div class="flex items-center gap-1.5">
+          <h1 class="text-sm font-black tracking-tight text-slate-900 dark:text-white leading-tight">DISTRICT MALIR</h1>
+          <span id="badge-daily-sno" class="px-1.5 py-0.2 rounded text-[10px] font-black bg-blue-600 text-white leading-tight">#1</span>
+          <span id="badge-draft-snaps-count" class="hidden px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-500 text-slate-900 animate-pulse">0 Snaps</span>
+        </div>
+        <p class="text-[10px] font-medium text-slate-500 dark:text-slate-400 leading-none">Gate Exit • 155 Fleet (92 Petrol, 63 EV)</p>
+      </div>
+    </div>
+
+    <!-- Right Controls: Status Badge, Dark Mode, Settings -->
+    <div class="flex items-center gap-1.5">
+      <!-- Online / Offline + Pending Sync Count Badge -->
+      <button id="badge-sync-status" class="btn-sync-trigger px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all" title="Click to Sync Now">
+        <span id="sync-status-dot" class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span id="sync-status-text">Online • Synced</span>
+      </button>
+
+      <!-- Dark / Light Mode Toggle -->
+      <button id="btn-toggle-theme" class="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors" title="Toggle Dark/Light Mode">
+        <svg id="theme-icon-sun" class="w-5 h-5 text-amber-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+        </svg>
+        <svg id="theme-icon-moon" class="w-5 h-5 text-slate-700 dark:text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+        </svg>
+      </button>
+
+      <!-- Settings Button -->
+      <button id="btn-open-settings" class="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors" title="Google Sheets Settings">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= MAIN TAB VIEWS CONTAINER ================= -->
+  <main class="flex-1 overflow-hidden relative">
+
+    <!-- TAB 1: GATE CAMERA & ENTRY CONTROLLER -->
+    <div id="tab-camera" class="tab-view h-full flex flex-col overflow-hidden">
+      
+      <!-- TOP PORTION: EXPANDED LIVE REAR CAMERA (Takes majority of screen) -->
+      <div class="relative bg-black flex-1 min-h-[55%] overflow-hidden flex items-center justify-center">
+        <!-- Live Video Element -->
+        <video id="camera-stream" autoplay playsinline muted class="w-full h-full object-cover"></video>
+        <!-- Offscreen Canvas for Full-Resolution Auto-Watermarking -->
+        <canvas id="camera-canvas" class="hidden"></canvas>
+
+        <!-- Viewfinder Corners Target Guides -->
+        <div class="absolute inset-4 pointer-events-none border border-white/20 rounded-lg">
+          <div class="viewfinder-corner top-0 left-0 border-t-2 border-l-2 rounded-tl"></div>
+          <div class="viewfinder-corner top-0 right-0 border-t-2 border-r-2 rounded-tr"></div>
+          <div class="viewfinder-corner bottom-0 left-0 border-b-2 border-l-2 rounded-bl"></div>
+          <div class="viewfinder-corner bottom-0 right-0 border-b-2 border-r-2 rounded-br"></div>
+        </div>
+
+        <!-- Camera Status Overlay Pill -->
+        <div class="absolute top-2.5 left-3 z-10">
+          <span id="camera-status-pill" class="px-2 py-0.5 text-xs font-semibold rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 backdrop-blur-sm">
+            Live Camera Ready
+          </span>
+        </div>
+
+        <!-- Camera Controls: Torch, Flip, Fallback Upload -->
+        <div class="absolute top-2.5 right-3 flex items-center gap-2 z-10">
+          <button id="btn-toggle-torch" class="hidden p-2 rounded-full bg-black/50 text-white backdrop-blur border border-white/20 hover:bg-black/70 active:scale-95 transition-all" title="Toggle Flashlight">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </button>
+
+          <button id="btn-flip-camera" class="p-2 rounded-full bg-black/50 text-white backdrop-blur border border-white/20 hover:bg-black/70 active:scale-95 transition-all" title="Switch Camera">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+          </button>
+
+          <button id="btn-camera-upload-fallback" class="p-2 rounded-full bg-black/50 text-white backdrop-blur border border-white/20 hover:bg-black/70 active:scale-95 transition-all" title="Upload Photo Fallback">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+          </button>
+          <input type="file" id="camera-fallback-file" accept="image/*" capture="environment" class="hidden">
+        </div>
+
+        <!-- Live Watermark Banner Preview (Clean: No Trip) -->
+        <div class="absolute bottom-0 inset-x-0 bg-slate-950/85 backdrop-blur-md px-3 py-1 border-t border-emerald-500/80 text-[11px] flex items-center justify-between z-10 text-slate-200">
+          <div class="flex items-center gap-1.5 truncate">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
+            <span class="font-bold text-white tracking-wide">WATERMARK:</span>
+            <span class="text-slate-300 truncate">Date & Time | Vehicle # | Type | UC</span>
+          </div>
+          <span class="text-[10px] text-emerald-400 font-semibold shrink-0">Auto-Save Gallery</span>
+        </div>
+      </div>
+
+      <!-- HORIZONTAL DRAFT SNAPS QUEUE BAR (for Relaxed Mind mode) -->
+      <div id="draft-snaps-container" class="hidden bg-slate-900 border-b border-slate-800 px-3 py-1.5 shrink-0 z-20">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-[10px] font-bold text-amber-400 flex items-center gap-1">
+            <span>📸</span> <span>Unfilled Snaps (Gate Rush Queue) - Tap to fill details:</span>
+          </span>
+          <span class="text-[10px] text-slate-400">Relax Mind Mode</span>
+        </div>
+        <div id="draft-snaps-list" class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5"></div>
+      </div>
+
+      <!-- STAGED DRAFT SNAP PREVIEW BANNER -->
+      <div id="staged-snap-banner" class="hidden bg-blue-950/80 border-b border-blue-800 px-3 py-1.5 flex items-center justify-between text-xs text-blue-200 shrink-0 z-20">
+        <div class="flex items-center gap-2">
+          <img id="staged-snap-thumb" class="w-8 h-8 rounded object-cover border border-blue-400">
+          <span id="staged-snap-time" class="truncate font-medium">Draft snap staged</span>
+        </div>
+        <button id="btn-clear-staged-snap" class="text-xs text-red-400 font-bold hover:underline">Clear Snap ✕</button>
+      </div>
+
+      <!-- BUTTON BAR: RAPID SNAP + CAPTURE & SAVE ENTRY + TOGGLE DETAILS -->
+      <div class="px-3 py-2 bg-white dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shrink-0 z-20 shadow-sm">
+        
+        <!-- 1. Rapid Snap Button (Gate Rush: Snap & Save to Gallery instantly) -->
+        <button id="btn-rapid-snap" class="py-2.5 px-3 rounded-xl font-bold text-xs text-white bg-slate-800 hover:bg-slate-700 active:scale-95 border border-slate-700 shadow flex items-center gap-1.5 shrink-0" title="Snap photo rapidly and auto-save to gallery without typing">
+          <span class="text-base">📸</span>
+          <span class="hidden sm:inline">Rapid Snap</span>
+        </button>
+
+        <!-- 2. Main Capture & Save Entry Button -->
+        <button id="btn-capture-save" class="flex-1 py-2.5 px-4 rounded-xl font-black text-xs sm:text-sm tracking-wide text-white bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-500 hover:to-blue-500 active:scale-[0.98] shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+          <svg class="w-4 h-4 text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+          </svg>
+          <span>CAPTURE & SAVE ENTRY</span>
+        </button>
+
+        <!-- 3. Minimize / Expand Details Section Button (As requested in error 3) -->
+        <button id="btn-toggle-details" class="py-2 px-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs border border-slate-200 dark:border-slate-700 flex items-center gap-1 shrink-0" title="Toggle camera size">
+          <span id="details-toggle-text">Details 🔽</span>
+        </button>
+      </div>
+
+      <!-- BOTTOM COMPACT / MINIMIZED ENTRY GRID -->
+      <div id="details-section" class="flex-1 overflow-y-auto px-3 py-1.5 bg-slate-50 dark:bg-slate-900/50">
+        
+        <!-- Unauthorized Vehicle Warning Banner -->
+        <div id="vehicle-warning-banner" class="hidden mb-1.5 p-2 bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-800 rounded-lg"></div>
+
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden divide-y divide-slate-100 dark:divide-slate-800">
+
+          <!-- Core Primary Row: Vehicle Number (Prominent) & Auto-Filled Type -->
+          <div class="grid grid-cols-12 divide-x divide-slate-100 dark:divide-slate-800 bg-blue-50/15 dark:bg-blue-950/10">
+            <!-- Vehicle Number Input -->
+            <div class="col-span-8 p-2 relative">
+              <div class="flex items-center justify-between">
+                <label class="block text-[10px] font-black uppercase text-blue-600 dark:text-blue-400 tracking-wider">Vehicle Number (155 Fleet)</label>
+                <button type="button" id="btn-clear-vehicle" class="text-[10px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">Clear</button>
+              </div>
+              <input type="text" id="grid-vehicle-number" autocomplete="off" class="w-full mt-0.5 bg-transparent font-black text-slate-900 dark:text-white text-base tracking-wide focus:outline-none placeholder-slate-400" placeholder="e.g. 717, 60312, 10059...">
+              <!-- Live Autocomplete Floating Dropdown -->
+              <div id="vehicle-autocomplete-list" class="hidden absolute left-0 right-0 top-full mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 z-50 max-h-56 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-700"></div>
+            </div>
+
+            <!-- Vehicle Type (Auto-Filled) -->
+            <div id="vehicle-type-container" class="col-span-4 p-2 border-l-4 border-blue-500 transition-colors">
+              <label class="block text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-wider">Type</label>
+              <select id="grid-vehicle-type" class="w-full mt-0.5 bg-transparent font-bold text-slate-900 dark:text-white text-xs sm:text-sm focus:outline-none cursor-pointer">
+                <option value="Petroleum" class="bg-white dark:bg-slate-900 text-blue-600 font-bold">Petroleum</option>
+                <option value="Electric" class="bg-white dark:bg-slate-900 text-emerald-600 font-bold">Electric</option>
+                <option value="Small EV" class="bg-white dark:bg-slate-900 text-amber-600 font-bold">Small EV</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- COLLAPSIBLE DETAILS SECTION (Can be minimized to leave massive camera view) -->
+          <div id="details-collapsible-section" class="divide-y divide-slate-100 dark:divide-slate-800">
+            
+            <!-- Row: S.No, Gate-Out Time, and Trips (Manual Input!) -->
+            <div class="grid grid-cols-12 divide-x divide-slate-100 dark:divide-slate-800">
+              <!-- S.No -->
+              <div class="col-span-2 p-1.5 bg-slate-50/70 dark:bg-slate-800/40 text-center">
+                <label class="block text-[9px] font-black uppercase text-slate-400 dark:text-slate-500">S.No</label>
+                <input type="text" id="grid-sno" value="1" readonly class="w-full bg-transparent font-black text-center text-slate-800 dark:text-slate-100 text-xs focus:outline-none">
+              </div>
+
+              <!-- Gate-Out Time -->
+              <div class="col-span-7 p-1.5">
+                <div class="flex items-center justify-between">
+                  <label class="block text-[9px] font-black uppercase text-slate-400 dark:text-slate-500">Gate-Out Time</label>
+                  <button type="button" id="btn-reset-time" class="text-[9px] text-blue-600 dark:text-blue-400 hover:underline">Live ↺</button>
+                </div>
+                <input type="text" id="grid-time" class="excel-grid-input w-full bg-transparent font-bold text-slate-800 dark:text-slate-100 text-xs focus:outline-none">
+              </div>
+
+              <!-- Trips (MANUAL ENTRY - NO AUTO 1!) -->
+              <div class="col-span-3 p-1.5 bg-amber-50/30 dark:bg-amber-950/20">
+                <label class="block text-[9px] font-black uppercase text-amber-600 dark:text-amber-400">Trips (Manual)</label>
+                <input type="text" id="grid-trips" value="" placeholder="e.g. 1, 2" class="w-full bg-transparent font-bold text-center text-slate-900 dark:text-white text-xs focus:outline-none placeholder-slate-400">
+              </div>
+            </div>
+
+            <!-- Row: UC No -->
+            <div class="p-1.5">
+              <label class="block text-[9px] font-black uppercase text-slate-400 dark:text-slate-500">UC No / Zone</label>
+              <input type="text" id="grid-uc" list="uc-options" class="w-full bg-transparent font-bold text-slate-800 dark:text-slate-100 text-xs focus:outline-none placeholder-slate-400" placeholder="e.g. Gulshan Hadeed, 13 A, Malir, Memon Goth...">
+              <datalist id="uc-options"></datalist>
+            </div>
+
+            <!-- Row: Driver Name & Helper Name -->
+            <div class="grid grid-cols-2 divide-x divide-slate-100 dark:divide-slate-800">
+              <div class="p-1.5">
+                <label class="block text-[9px] font-black uppercase text-slate-400 dark:text-slate-500">Driver Name</label>
+                <input type="text" id="grid-driver" class="w-full bg-transparent font-medium text-slate-800 dark:text-slate-200 text-xs focus:outline-none placeholder-slate-400" placeholder="Driver name">
+              </div>
+
+              <div class="p-1.5">
+                <label class="block text-[9px] font-black uppercase text-slate-400 dark:text-slate-500">Helper Name</label>
+                <input type="text" id="grid-helper" value="-" class="w-full bg-transparent font-medium text-slate-800 dark:text-slate-200 text-xs focus:outline-none placeholder-slate-400" placeholder="Helper name">
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- TAB 2: TODAY'S LIVE EXCEL SHEET -->
+    <div id="tab-sheet" class="tab-view h-full flex flex-col overflow-hidden hidden bg-slate-50 dark:bg-slate-950">
+      
+      <!-- Top Action Bar & Summary -->
+      <div class="p-3 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 space-y-2 shrink-0">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-slate-500 dark:text-slate-400">Today's Exits:</span>
+            <span id="sheet-count-total" class="font-black text-sm text-slate-900 dark:text-white">0</span>
+            <span class="text-xs text-slate-300 dark:text-slate-700">•</span>
+            <span class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold"><span id="sheet-count-synced">0</span> Synced</span>
+            <span class="text-xs text-slate-300 dark:text-slate-700">•</span>
+            <span class="text-xs text-amber-500 font-semibold"><span id="sheet-count-pending">0</span> Pending</span>
+          </div>
+
+          <button id="btn-open-pending-drawer" class="px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm flex items-center gap-1 active:scale-95 transition-all">
+            <span>Pending Vehicles</span>
+            <span id="badge-pending-vehicles-count" class="px-1.5 py-0.2 rounded-full bg-emerald-800 text-[10px]">155</span>
+          </button>
+        </div>
+
+        <!-- Search & Filter Controls -->
+        <div class="flex items-center gap-2">
+          <div class="relative flex-1">
+            <input type="text" id="sheet-search-input" placeholder="Search vehicle #, driver, or UC..." class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-100 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-blue-500">
+            <svg class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </div>
+
+          <button id="btn-export-csv" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center gap-1">
+            <span>Export CSV</span>
+          </button>
+        </div>
+
+        <!-- Filter Pills: All | Petroleum | EV Fleet | Pending -->
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1">
+          <button class="sheet-filter-pill px-3 py-1 rounded-full text-xs font-bold bg-blue-600 text-white shrink-0" data-filter="all">All Exits</button>
+          <button class="sheet-filter-pill px-3 py-1 rounded-full text-xs font-semibold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 shrink-0" data-filter="petroleum">Petroleum</button>
+          <button class="sheet-filter-pill px-3 py-1 rounded-full text-xs font-semibold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 shrink-0" data-filter="ev">EV Fleet</button>
+          <button class="sheet-filter-pill px-3 py-1 rounded-full text-xs font-semibold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 shrink-0" data-filter="pending">Pending Sync</button>
+        </div>
+      </div>
+
+      <!-- Live Excel Spreadsheet Table (Clean: Exact 8 columns, no sync status in export) -->
+      <div class="flex-1 overflow-auto">
+        <table class="w-full text-left border-collapse">
+          <thead class="sticky top-0 bg-slate-200 dark:bg-slate-900 text-slate-600 dark:text-slate-400 text-[10px] uppercase font-black tracking-wider border-b border-slate-300 dark:border-slate-800 z-10 shadow-sm">
+            <tr>
+              <th class="px-2.5 py-2 text-center w-10">S.No</th>
+              <th class="px-2 py-2 text-center w-16">Status</th>
+              <th class="px-2 py-2 text-center w-12">Photo</th>
+              <th class="px-2.5 py-2">Gate-Out Time</th>
+              <th class="px-2.5 py-2">Vehicle #</th>
+              <th class="px-2.5 py-2">Type</th>
+              <th class="px-2.5 py-2">UC No</th>
+              <th class="px-2.5 py-2">Driver</th>
+              <th class="px-2.5 py-2">Helper</th>
+              <th class="px-2.5 py-2 text-center">Trips</th>
+            </tr>
+          </thead>
+          <tbody id="today-sheet-tbody" class="bg-white dark:bg-slate-900/60 divide-y divide-slate-100 dark:divide-slate-800">
+          </tbody>
+        </table>
+
+        <div id="sheet-empty-state" class="py-16 text-center text-slate-400 space-y-2">
+          <svg class="w-12 h-12 mx-auto text-slate-300 dark:text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+          </svg>
+          <p class="text-sm font-semibold text-slate-500 dark:text-slate-400">No gate exits logged today yet.</p>
+          <p class="text-xs text-slate-400">Snap photos at the gate or fill vehicle numbers to log exits.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 3: MONTHLY DASHBOARD -->
+    <div id="tab-dashboard" class="tab-view h-full flex flex-col overflow-y-auto hidden bg-slate-50 dark:bg-slate-950 p-3 space-y-3">
+      
+      <!-- Date Selector Header -->
+      <div class="flex items-center justify-between bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div>
+          <h2 class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Fleet Analytics Inspector</h2>
+          <p class="text-sm font-bold text-slate-900 dark:text-white">Daily & Monthly Summary</p>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <input type="date" id="dashboard-date-picker" class="text-xs px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-semibold focus:outline-none">
+          <button id="btn-dashboard-today" class="px-2.5 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white">Today</button>
+        </div>
+      </div>
+
+      <!-- Top Summary KPI Cards (4 Cards) -->
+      <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <div class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <span class="text-[10px] font-bold uppercase text-slate-400 dark:text-slate-500">Total Deployed</span>
+          <div id="kpi-total-deployed" class="text-xl font-black text-slate-900 dark:text-white mt-0.5">0 / 155</div>
+          <span class="text-[10px] text-blue-500 font-semibold">Active in District Malir</span>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <span class="text-[10px] font-bold uppercase text-blue-500">Petroleum Fleet</span>
+          <div id="kpi-petrol-deployed" class="text-xl font-black text-blue-600 dark:text-blue-400 mt-0.5">0</div>
+          <span id="kpi-petrol-pending" class="text-[10px] text-slate-500 font-semibold">92 Pending</span>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <span class="text-[10px] font-bold uppercase text-emerald-500">EV Fleet (All)</span>
+          <div id="kpi-ev-deployed" class="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5">0</div>
+          <span id="kpi-ev-pending" class="text-[10px] text-slate-500 font-semibold">63 Pending</span>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <span class="text-[10px] font-bold uppercase text-amber-500">Total Trips</span>
+          <div id="kpi-total-trips" class="text-xl font-black text-amber-600 dark:text-amber-400 mt-0.5">0</div>
+          <span class="text-[10px] text-slate-500 font-semibold">Logged Exits</span>
+        </div>
+      </div>
+
+      <!-- Deployed Today by Type Cards -->
+      <div class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
+        <h3 class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Fleet Deployment by Type (155 Vehicles)</h3>
+        <div class="grid grid-cols-3 gap-2 text-center">
+          <div class="p-2 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/40">
+            <div class="text-[10px] font-bold text-blue-600 dark:text-blue-400">Petroleum</div>
+            <div id="card-type-petroleum" class="text-base font-black text-slate-900 dark:text-white mt-0.5">0 / 92</div>
+          </div>
+          <div class="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/40">
+            <div class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">Electric</div>
+            <div id="card-type-electric" class="text-base font-black text-slate-900 dark:text-white mt-0.5">0 / 53</div>
+          </div>
+          <div class="p-2 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/40">
+            <div class="text-[10px] font-bold text-amber-600 dark:text-amber-400">Small EV</div>
+            <div id="card-type-smallev" class="text-base font-black text-slate-900 dark:text-white mt-0.5">0 / 10</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Zone-wise Deployment Summary Table -->
+      <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div class="p-3 border-b border-slate-100 dark:border-slate-800">
+          <h3 class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Zone-wise Deployment Summary</h3>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead class="bg-slate-100 dark:bg-slate-800/80 text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">
+              <tr>
+                <th class="px-3 py-2">Zone</th>
+                <th class="px-3 py-2 text-center text-blue-600 dark:text-blue-400">Petroleum</th>
+                <th class="px-3 py-2 text-center text-emerald-600 dark:text-emerald-400">EV Fleet</th>
+                <th class="px-3 py-2 text-center">Total Trips</th>
+                <th class="px-3 py-2 text-center">Total Exits</th>
+              </tr>
+            </thead>
+            <tbody id="dashboard-zone-tbody" class="divide-y divide-slate-100 dark:divide-slate-800">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Visual Charts Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pb-8">
+        <div class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <h3 class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Fleet Mix Share</h3>
+          <div class="h-52 relative">
+            <canvas id="chart-fleet-mix"></canvas>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <h3 class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Hourly Gate-Out Rush</h3>
+          <div class="h-52 relative">
+            <canvas id="chart-hourly-trend"></canvas>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm md:col-span-2">
+          <h3 class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">Deployments Across Zones</h3>
+          <div class="h-52 relative">
+            <canvas id="chart-zones-distribution"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ================= BOTTOM NAVIGATION BAR (3 TABS) ================= -->
+  <nav class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-4 py-1 flex items-center justify-around shrink-0 z-30 safe-bottom shadow-lg">
+    <button class="nav-tab-btn flex flex-col items-center py-1.5 px-3 rounded-lg text-blue-600 dark:text-blue-400 transition-colors" data-tab="tab-camera">
+      <svg class="w-6 h-6 tab-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+      <span class="text-[11px] tab-label font-bold mt-0.5">Gate Camera</span>
+    </button>
+
+    <button class="nav-tab-btn flex flex-col items-center py-1.5 px-3 rounded-lg text-slate-400 dark:text-slate-500 transition-colors" data-tab="tab-sheet">
+      <svg class="w-6 h-6 tab-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+      <span class="text-[11px] tab-label mt-0.5">Today's Sheet</span>
+    </button>
+
+    <button class="nav-tab-btn flex flex-col items-center py-1.5 px-3 rounded-lg text-slate-400 dark:text-slate-500 transition-colors" data-tab="tab-dashboard">
+      <svg class="w-6 h-6 tab-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+      <span class="text-[11px] tab-label mt-0.5">Dashboard</span>
+    </button>
+  </nav>
+
+  <!-- ================= PENDING VEHICLES DRAWER ================= -->
+  <div id="pending-drawer-backdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden transition-opacity"></div>
+  <aside id="drawer-pending-vehicles" class="fixed top-0 bottom-0 right-0 w-full sm:w-96 bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 z-50 transform translate-x-full transition-transform duration-300 ease-out flex flex-col shadow-2xl">
+    <div class="p-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-850">
+      <div>
+        <h2 class="text-sm font-black text-slate-900 dark:text-white">Pending Vehicles</h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400">155 Official Fleet - Not Exited Today</p>
+      </div>
+      <button id="btn-close-pending-drawer" class="p-1.5 rounded-lg text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div id="pending-vehicles-stats" class="p-3 border-b border-slate-100 dark:border-slate-800"></div>
+
+    <div class="p-3 space-y-2 border-b border-slate-100 dark:border-slate-800">
+      <input type="text" id="pending-search-input" placeholder="Search vehicle #, UC, or driver..." class="w-full px-3 py-1.5 text-xs bg-slate-100 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none">
+      <div class="flex items-center gap-1.5">
+        <button class="pending-filter-pill px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-600 text-white" data-pending-filter="all">All</button>
+        <button class="pending-filter-pill px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300" data-pending-filter="petroleum">Petroleum (92)</button>
+        <button class="pending-filter-pill px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300" data-pending-filter="ev">EV Fleet (63)</button>
+      </div>
+    </div>
+
+    <div id="pending-vehicles-list" class="flex-1 overflow-y-auto p-3 space-y-2"></div>
+  </aside>
+
+  <!-- ================= DUPLICATE VEHICLE MODAL ================= -->
+  <div id="modal-duplicate-vehicle" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-sm w-full p-4 shadow-2xl space-y-3">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-500 flex items-center justify-center font-bold">
+          ⚠️
+        </div>
+        <h3 id="dup-modal-title" class="font-extrabold text-slate-900 dark:text-white text-base">Duplicate Exit Warning</h3>
+      </div>
+
+      <div id="dup-modal-body" class="space-y-2"></div>
+
+      <div class="flex items-center gap-2 pt-2">
+        <button id="btn-dup-cancel" class="flex-1 py-2.5 px-3 rounded-xl border border-slate-300 dark:border-slate-700 font-bold text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+          Cancel (Mistake)
+        </button>
+        <button id="btn-dup-proceed" class="flex-1 py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md transition-colors">
+          Save as Trip #2
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SETTINGS MODAL ================= -->
+  <div id="modal-settings" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-4 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">⚙️</span>
+          <div>
+            <h3 class="font-black text-slate-900 dark:text-white text-base">Google Sheets Sync Settings</h3>
+            <p class="text-xs text-slate-400">Monthly Fleet Workbook Backend</p>
+          </div>
+        </div>
+        <button id="btn-close-settings" class="p-1 rounded-lg text-slate-400 hover:text-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Google Apps Script Web App URL</label>
+          <input type="url" id="settings-script-url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-3 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono text-xs focus:outline-none focus:border-blue-500">
+          <p class="text-[11px] text-slate-500 mt-1">Deploy `Code.gs` in Google Sheets with access set to "Anyone".</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button id="btn-test-connection" class="flex-1 py-2 px-3 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors">
+            Test Connection
+          </button>
+          <button id="btn-save-settings" class="flex-1 py-2 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold transition-colors">
+            Save Settings
+          </button>
+        </div>
+
+        <div id="settings-test-result"></div>
+
+        <hr class="border-slate-200 dark:border-slate-800">
+
+        <div class="space-y-1.5">
+          <label class="block font-bold text-slate-700 dark:text-slate-300">Data Management & Backup</label>
+          <button id="btn-export-backup" class="w-full py-2 px-3 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center gap-2">
+            <span>📥 Export All Local Data (JSON Backup)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PHOTO VIEWER MODAL ================= -->
+  <div id="modal-photo-viewer" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex flex-col p-4 hidden">
+    <div class="flex items-center justify-between pb-3 text-white">
+      <div>
+        <h3 id="modal-photo-title" class="font-bold text-sm">Gate Exit Watermarked Photo</h3>
+        <p id="modal-photo-details" class="text-xs text-slate-400"></p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btn-download-modal-photo" class="px-3 py-1.5 rounded-lg bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 flex items-center gap-1">
+          <span>Download</span>
+        </button>
+        <button id="btn-close-photo-modal" class="p-1.5 rounded-lg text-slate-400 hover:text-white">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="flex-1 flex items-center justify-center overflow-hidden">
+      <img id="modal-photo-img" src="" alt="Gate Exit Photo" class="max-h-full max-w-full object-contain rounded-lg shadow-2xl border border-white/10">
+    </div>
+  </div>
+
+  <!-- ================= TOAST NOTIFICATION ================= -->
+  <div id="grid-toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 px-4 py-2.5 rounded-xl shadow-2xl text-xs font-bold border border-slate-700 dark:border-slate-200 z-50 opacity-0 pointer-events-none transition-opacity duration-300 backdrop-blur max-w-[90vw] text-center"></div>
+
+  <!-- Client Application Modules -->
+  <script src="./js/db.js"></script>
+  <script src="./js/camera.js"></script>
+  <script src="./js/entry-grid.js"></script>
+  <script src="./js/sync.js"></script>
+  <script src="./js/sheet-view.js"></script>
+  <script src="./js/dashboard.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
