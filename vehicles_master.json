@@ -1,0 +1,1096 @@
+{
+  "zones": [
+    "Malir",
+    "Landhi",
+    "Memon Goth",
+    "Gulshan Hadeed",
+    "Extra Work"
+  ],
+  "vehicles": [
+    {
+      "vehicle_number": "717",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Gulshan Hadeed",
+      "default_driver": "M Kareem",
+      "default_helper": "Lal M"
+    },
+    {
+      "vehicle_number": "726",
+      "vehicle_type": "Petroleum",
+      "default_uc": "13 A",
+      "default_driver": "Muharram Ali",
+      "default_helper": "Liaqat Ali"
+    },
+    {
+      "vehicle_number": "730",
+      "vehicle_type": "Petroleum",
+      "default_uc": "7",
+      "default_driver": "Shahzad Khan uc7",
+      "default_helper": "M Umar"
+    },
+    {
+      "vehicle_number": "732",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Memon Goth",
+      "default_driver": "M Bachal",
+      "default_helper": "M Saleem Balouch"
+    },
+    {
+      "vehicle_number": "736",
+      "vehicle_type": "Petroleum",
+      "default_uc": "6",
+      "default_driver": "Sher M",
+      "default_helper": "Rashid"
+    },
+    {
+      "vehicle_number": "738",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Memon Goth",
+      "default_driver": "Junaid",
+      "default_helper": "Asif Ali"
+    },
+    {
+      "vehicle_number": "739",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Gulshan Hadeed",
+      "default_driver": "Dildar",
+      "default_helper": "Kamal 457"
+    },
+    {
+      "vehicle_number": "740",
+      "vehicle_type": "Petroleum",
+      "default_uc": "DC Complex",
+      "default_driver": "M Nabie",
+      "default_helper": "Fazal"
+    },
+    {
+      "vehicle_number": "742",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Warehouse",
+      "default_driver": "Sher wai",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "743",
+      "vehicle_type": "Petroleum",
+      "default_uc": "7",
+      "default_driver": "Aijaz Ali 045",
+      "default_helper": "Haibat Khan"
+    },
+    {
+      "vehicle_number": "746",
+      "vehicle_type": "Petroleum",
+      "default_uc": "9",
+      "default_driver": "Shah Nawaz",
+      "default_helper": "Safeer Mehdi"
+    },
+    {
+      "vehicle_number": "747",
+      "vehicle_type": "Petroleum",
+      "default_uc": "6",
+      "default_driver": "Lutaf Ali",
+      "default_helper": "Shahid Khan"
+    },
+    {
+      "vehicle_number": "752",
+      "vehicle_type": "Petroleum",
+      "default_uc": "7",
+      "default_driver": "Amjad Ali",
+      "default_helper": "Rasool Bux"
+    },
+    {
+      "vehicle_number": "753",
+      "vehicle_type": "Petroleum",
+      "default_uc": "N5 Airport",
+      "default_driver": "Raaz M",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "768",
+      "vehicle_type": "Petroleum",
+      "default_uc": "13 A",
+      "default_driver": "Fateh Khan",
+      "default_helper": "M Umar"
+    },
+    {
+      "vehicle_number": "769",
+      "vehicle_type": "Petroleum",
+      "default_uc": "7",
+      "default_driver": "Salman 703",
+      "default_helper": "Sultan"
+    },
+    {
+      "vehicle_number": "774",
+      "vehicle_type": "Petroleum",
+      "default_uc": "13 A",
+      "default_driver": "M Luqman 475",
+      "default_helper": "Asif Ali"
+    },
+    {
+      "vehicle_number": "775",
+      "vehicle_type": "Petroleum",
+      "default_uc": "11",
+      "default_driver": "Sajjad Ali 321",
+      "default_helper": "Seengar"
+    },
+    {
+      "vehicle_number": "777",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Memon Goth",
+      "default_driver": "Abdul Ghafoor 651",
+      "default_helper": "Dilbar"
+    },
+    {
+      "vehicle_number": "779",
+      "vehicle_type": "Petroleum",
+      "default_uc": "9",
+      "default_driver": "Ashique Hussain Lashari",
+      "default_helper": "Ayaz"
+    },
+    {
+      "vehicle_number": "780",
+      "vehicle_type": "Petroleum",
+      "default_uc": "13 A",
+      "default_driver": "Naheem",
+      "default_helper": "Imtiaz"
+    },
+    {
+      "vehicle_number": "781",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Memon Goth",
+      "default_driver": "Sikandar Khan",
+      "default_helper": "M Jawaid"
+    },
+    {
+      "vehicle_number": "782",
+      "vehicle_type": "Petroleum",
+      "default_uc": "7",
+      "default_driver": "Tahir Khan",
+      "default_helper": "M Fayaz"
+    },
+    {
+      "vehicle_number": "783",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Gulshan Hadeed",
+      "default_driver": "Illahi Bux",
+      "default_helper": "Ghulam Sajjad"
+    },
+    {
+      "vehicle_number": "804",
+      "vehicle_type": "Petroleum",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "812",
+      "vehicle_type": "Petroleum",
+      "default_uc": "7",
+      "default_driver": "Ghulam Abbas",
+      "default_helper": "Sanaullah Baloch"
+    },
+    {
+      "vehicle_number": "814",
+      "vehicle_type": "Petroleum",
+      "default_uc": "5",
+      "default_driver": "Ajab Khan",
+      "default_helper": "Muneer"
+    },
+    {
+      "vehicle_number": "815",
+      "vehicle_type": "Petroleum",
+      "default_uc": "13 A",
+      "default_driver": "Abdul Ghafoor 991",
+      "default_helper": "Razzaque"
+    },
+    {
+      "vehicle_number": "816",
+      "vehicle_type": "Petroleum",
+      "default_uc": "5",
+      "default_driver": "Hasmat",
+      "default_helper": "M Qayoom"
+    },
+    {
+      "vehicle_number": "818",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Memon Goth",
+      "default_driver": "Jaffar Hussain",
+      "default_helper": "Ashfaq Ahmad"
+    },
+    {
+      "vehicle_number": "820",
+      "vehicle_type": "Petroleum",
+      "default_uc": "11",
+      "default_driver": "M Nadeem 749",
+      "default_helper": "Tanveer Ali"
+    },
+    {
+      "vehicle_number": "821",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Gulshan Hadeed",
+      "default_driver": "M Luqman Pathan",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "822",
+      "vehicle_type": "Petroleum",
+      "default_uc": "2",
+      "default_driver": "Asadullah",
+      "default_helper": "Ghulam Sarwar"
+    },
+    {
+      "vehicle_number": "823",
+      "vehicle_type": "Petroleum",
+      "default_uc": "N5 Airport",
+      "default_driver": "M Waseem 13B 093",
+      "default_helper": "Hameed Shaikh"
+    },
+    {
+      "vehicle_number": "824",
+      "vehicle_type": "Petroleum",
+      "default_uc": "10",
+      "default_driver": "Abdul Rahman",
+      "default_helper": "M Fayaz"
+    },
+    {
+      "vehicle_number": "829",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Memon Goth",
+      "default_driver": "Zubair Ahmed",
+      "default_helper": "Zeeshan"
+    },
+    {
+      "vehicle_number": "840",
+      "vehicle_type": "Petroleum",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "844",
+      "vehicle_type": "Petroleum",
+      "default_uc": "13 A",
+      "default_driver": "Muzzafar Ali",
+      "default_helper": "Abdul Aziz"
+    },
+    {
+      "vehicle_number": "852",
+      "vehicle_type": "Petroleum",
+      "default_uc": "10",
+      "default_driver": "Abdul Nabeel",
+      "default_helper": "Abid Ali"
+    },
+    {
+      "vehicle_number": "854",
+      "vehicle_type": "Petroleum",
+      "default_uc": "13 A",
+      "default_driver": "Saeen Bux",
+      "default_helper": "Sahab Dino"
+    },
+    {
+      "vehicle_number": "856",
+      "vehicle_type": "Petroleum",
+      "default_uc": "2",
+      "default_driver": "Slaman",
+      "default_helper": "Zaman"
+    },
+    {
+      "vehicle_number": "858",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Gulshan Hadeed",
+      "default_driver": "Jameel Ahmad",
+      "default_helper": "M Urus"
+    },
+    {
+      "vehicle_number": "860",
+      "vehicle_type": "Petroleum",
+      "default_uc": "5",
+      "default_driver": "Umer Mursaleen",
+      "default_helper": "M Younus"
+    },
+    {
+      "vehicle_number": "863",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Gulshan Hadeed",
+      "default_driver": "Usman Ghani",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "865",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Memon Goth",
+      "default_driver": "Faqeer Rehman",
+      "default_helper": "Razzaque"
+    },
+    {
+      "vehicle_number": "868",
+      "vehicle_type": "Petroleum",
+      "default_uc": "13 A",
+      "default_driver": "Rahib Ali",
+      "default_helper": "Ahsan 999"
+    },
+    {
+      "vehicle_number": "869",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Memon Goth",
+      "default_driver": "M Saleem",
+      "default_helper": "Ayaz"
+    },
+    {
+      "vehicle_number": "870",
+      "vehicle_type": "Petroleum",
+      "default_uc": "13 A",
+      "default_driver": "Rashid Hussain",
+      "default_helper": "Jan M"
+    },
+    {
+      "vehicle_number": "871",
+      "vehicle_type": "Petroleum",
+      "default_uc": "8",
+      "default_driver": "Anwar Ali",
+      "default_helper": "Rehman Gul"
+    },
+    {
+      "vehicle_number": "873",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Gulshan Hadeed",
+      "default_driver": "Sajid Ali 025",
+      "default_helper": "Shahid Khan"
+    },
+    {
+      "vehicle_number": "1683",
+      "vehicle_type": "Petroleum",
+      "default_uc": "5",
+      "default_driver": "M Shahzad 5 617",
+      "default_helper": "Kamran Khan"
+    },
+    {
+      "vehicle_number": "1632",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Complainer",
+      "default_driver": "m sabir",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "1671",
+      "vehicle_type": "Petroleum",
+      "default_uc": "10",
+      "default_driver": "Ahsan",
+      "default_helper": "Sohail Haider"
+    },
+    {
+      "vehicle_number": "20239",
+      "vehicle_type": "Petroleum",
+      "default_uc": "10",
+      "default_driver": "Ahsan Rehman",
+      "default_helper": "Sohail Haider"
+    },
+    {
+      "vehicle_number": "20281",
+      "vehicle_type": "Petroleum",
+      "default_uc": "5",
+      "default_driver": "Istekhaj",
+      "default_helper": "Khair Zada"
+    },
+    {
+      "vehicle_number": "5978",
+      "vehicle_type": "Petroleum",
+      "default_uc": "5",
+      "default_driver": "Nasir Ali Khan",
+      "default_helper": "Malook"
+    },
+    {
+      "vehicle_number": "20287",
+      "vehicle_type": "Petroleum",
+      "default_uc": "N5 Manzil Pump",
+      "default_driver": "Farhadullah",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "20206",
+      "vehicle_type": "Petroleum",
+      "default_uc": "6",
+      "default_driver": "M Younis",
+      "default_helper": "Haji"
+    },
+    {
+      "vehicle_number": "20286",
+      "vehicle_type": "Petroleum",
+      "default_uc": "10",
+      "default_driver": "M Asif pagal 191",
+      "default_helper": "Yasir Hussain"
+    },
+    {
+      "vehicle_number": "1675",
+      "vehicle_type": "Petroleum",
+      "default_uc": "8",
+      "default_driver": "Sajid Rehman",
+      "default_helper": "Moula Bux"
+    },
+    {
+      "vehicle_number": "20194",
+      "vehicle_type": "Petroleum",
+      "default_uc": "N5 HTV Yard Road",
+      "default_driver": "Rehan",
+      "default_helper": "Noman"
+    },
+    {
+      "vehicle_number": "1639",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Uc m",
+      "default_driver": "Fiaz m",
+      "default_helper": "M Sardar"
+    },
+    {
+      "vehicle_number": "1676",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Memon Goth",
+      "default_driver": "Kamran Ali",
+      "default_helper": "Ashiq Ali"
+    },
+    {
+      "vehicle_number": "1693",
+      "vehicle_type": "Petroleum",
+      "default_uc": "8",
+      "default_driver": "Ahmad Rahman",
+      "default_helper": "Jameel Hussain"
+    },
+    {
+      "vehicle_number": "1664",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Memon Goth",
+      "default_driver": "Farman Laghari",
+      "default_helper": "Kamal 849"
+    },
+    {
+      "vehicle_number": "1663",
+      "vehicle_type": "Petroleum",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "1702",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Memon Goth",
+      "default_driver": "M Aslam",
+      "default_helper": "Ashiq Ali"
+    },
+    {
+      "vehicle_number": "1645",
+      "vehicle_type": "Petroleum",
+      "default_uc": "8",
+      "default_driver": "Syed Ghani",
+      "default_helper": "Mian Hazrat"
+    },
+    {
+      "vehicle_number": "1679",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Memon Goth",
+      "default_driver": "Arsalan Ali",
+      "default_helper": "Niaz Ali"
+    },
+    {
+      "vehicle_number": "1684",
+      "vehicle_type": "Petroleum",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "1674",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Memon Goth",
+      "default_driver": "Meer Zaman",
+      "default_helper": "Pir Bux"
+    },
+    {
+      "vehicle_number": "20249",
+      "vehicle_type": "Petroleum",
+      "default_uc": "3",
+      "default_driver": "Barkat Ali",
+      "default_helper": "Khan M"
+    },
+    {
+      "vehicle_number": "20191",
+      "vehicle_type": "Petroleum",
+      "default_uc": "8",
+      "default_driver": "Salman 703",
+      "default_helper": "Imran"
+    },
+    {
+      "vehicle_number": "20184",
+      "vehicle_type": "Petroleum",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "20255",
+      "vehicle_type": "Petroleum",
+      "default_uc": "8",
+      "default_driver": "Maaz",
+      "default_helper": "Imran"
+    },
+    {
+      "vehicle_number": "20278",
+      "vehicle_type": "Petroleum",
+      "default_uc": "1",
+      "default_driver": "Abdullah",
+      "default_helper": "M Nazeer"
+    },
+    {
+      "vehicle_number": "5998",
+      "vehicle_type": "Petroleum",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "20053",
+      "vehicle_type": "Petroleum",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "20272",
+      "vehicle_type": "Petroleum",
+      "default_uc": "3",
+      "default_driver": "Umar Rehman",
+      "default_helper": "Kashif Khan"
+    },
+    {
+      "vehicle_number": "20207",
+      "vehicle_type": "Petroleum",
+      "default_uc": "12",
+      "default_driver": "Shahzad Shah",
+      "default_helper": "Sajjid"
+    },
+    {
+      "vehicle_number": "20205",
+      "vehicle_type": "Petroleum",
+      "default_uc": "12",
+      "default_driver": "Juma Khan",
+      "default_helper": "Imam Bux"
+    },
+    {
+      "vehicle_number": "1670",
+      "vehicle_type": "Petroleum",
+      "default_uc": "2",
+      "default_driver": "Gul Sher",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "1673",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Welding Team",
+      "default_driver": "Mehboob Ali",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "20212",
+      "vehicle_type": "Petroleum",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "20246",
+      "vehicle_type": "Petroleum",
+      "default_uc": "10",
+      "default_driver": "M Asif pagal 191",
+      "default_helper": "Habibullah"
+    },
+    {
+      "vehicle_number": "20285",
+      "vehicle_type": "Petroleum",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "20275",
+      "vehicle_type": "Petroleum",
+      "default_uc": "1",
+      "default_driver": "Ashique Hussain Lashari",
+      "default_helper": "M Aslam LTV"
+    },
+    {
+      "vehicle_number": "1698",
+      "vehicle_type": "Petroleum",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "1618",
+      "vehicle_type": "Petroleum",
+      "default_uc": "Memon Goth",
+      "default_driver": "Tasleem",
+      "default_helper": "Shoukat Ali"
+    },
+    {
+      "vehicle_number": "1631",
+      "vehicle_type": "Petroleum",
+      "default_uc": "1",
+      "default_driver": "Noman",
+      "default_helper": "Habib Ur Rehman"
+    },
+    {
+      "vehicle_number": "6020",
+      "vehicle_type": "Petroleum",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "1699",
+      "vehicle_type": "Petroleum",
+      "default_uc": "3",
+      "default_driver": "Murtaza",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "310",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "311",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "312",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "313",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "314",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "315",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "316",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "317",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "318",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "319",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "320",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "321",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "322",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "323",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "324",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "325",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "326",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "327",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "328",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "329",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "330",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "331",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "332",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "333",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "334",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "335",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "336",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "337",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "338",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "339",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "340",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "341",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "1112",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "1113",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "1114",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "1115",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "1116",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "1123",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "1126",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "1127",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "1128",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "1129",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "1130",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "60312",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "60313",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "60314",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "60315",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "60316",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "60317",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "60318",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "20284",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "864",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "811",
+      "vehicle_type": "Electric",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "10059",
+      "vehicle_type": "Small EV",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "10060",
+      "vehicle_type": "Small EV",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "10081",
+      "vehicle_type": "Small EV",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "10079",
+      "vehicle_type": "Small EV",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "10077",
+      "vehicle_type": "Small EV",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "10080",
+      "vehicle_type": "Small EV",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "10083",
+      "vehicle_type": "Small EV",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "10082",
+      "vehicle_type": "Small EV",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "10076",
+      "vehicle_type": "Small EV",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    },
+    {
+      "vehicle_number": "10078",
+      "vehicle_type": "Small EV",
+      "default_uc": "",
+      "default_driver": "",
+      "default_helper": "-"
+    }
+  ]
+}
